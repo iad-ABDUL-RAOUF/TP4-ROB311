@@ -52,8 +52,8 @@ print('Reducing dimensions of data')
 
 pca = PCA(n_components=50)
 pca.fit(train_data)
-pca.transform(train_data)
-pca.transform(test_data)
+train_data = pca.transform(train_data)
+test_data = pca.transform(test_data)
 print(train_data.shape)
 
 # Creating and training SVM Classifier
