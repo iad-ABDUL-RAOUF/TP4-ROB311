@@ -8,8 +8,8 @@ import csv
 # Importing and preparing datasets
 
 print('Importing training data')
-directory = "/home/iad/Documents/ENSTA/3A/rob_311/TP_rob311/TP4/" # data directory on madeleine's computer 
-# directory = "./" # data directory on madeleine's computer 
+#directory = "/home/iad/Documents/ENSTA/3A/rob_311/TP_rob311/TP4/" # data directory on iad's computer 
+directory = "./" # data directory on madeleine's computer 
 # directory = "yourpath/" # prof : put your data directory here
 datafileTrain = "mnist_train.csv"
 dataFileTest = "mnist_test.csv"
@@ -54,6 +54,7 @@ pca = PCA(n_components=50)
 pca.fit(train_data)
 pca.transform(train_data)
 pca.transform(test_data)
+print(train_data.shape)
 
 # Creating and training SVM Classifier
 
@@ -66,7 +67,7 @@ clf.fit(train_data, train_class)
 
 print('Using trained classifier')
 
-test_predict = clf.predict(test_class)
+test_predict = clf.predict(test_data)
 print('Classes from test dataset : ')
 print(test_class[:10])
 print('Predicted classes :')
