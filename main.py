@@ -8,11 +8,16 @@ import csv
 #Importing and preparing datasets
 
 print('Importing training data')
+directory = "/home/iad/Documents/ENSTA/3A/rob_311/TP_rob311/TP4/" #data directory on madeleine's computer 
+#directory = "./" #data directory on madeleine's computer 
+#directory = "yourpath/" #prof : put your data directory here
+datafileTrain = "mnist_train.csv"
+dataFileTest = "mnist_test.csv"
 
 train_data = np.empty((0,784),dtype=int)
 train_class = np.empty((0),dtype=int)
 
-file=open("./mnist_train.csv","r")
+file=open(directory+datafileTrain,"r")
 test=csv.reader(file)
 i=0;
 for row in test:
@@ -28,7 +33,7 @@ print('Importing testing data')
 test_data = np.empty((0,784),dtype=int)
 test_class = np.empty((0),dtype=int)
 
-file=open("./mnist_test.csv","r")
+file=open(directory+dataFileTest,"r")
 test=csv.reader(file)
 firstline=True
 for row in test:
