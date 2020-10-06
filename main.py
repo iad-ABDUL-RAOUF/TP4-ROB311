@@ -5,43 +5,44 @@ from sklearn.svm import SVC
 from sklearn.decomposition import PCA
 import csv
 
-#Importing and preparing datasets
+# Importing and preparing datasets
 
 print('Importing training data')
-directory = "/home/iad/Documents/ENSTA/3A/rob_311/TP_rob311/TP4/" #data directory on madeleine's computer 
-#directory = "./" #data directory on madeleine's computer 
-#directory = "yourpath/" #prof : put your data directory here
+directory = "/home/iad/Documents/ENSTA/3A/rob_311/TP_rob311/TP4/" # data directory on madeleine's computer 
+# directory = "./" # data directory on madeleine's computer 
+# directory = "yourpath/" # prof : put your data directory here
 datafileTrain = "mnist_train.csv"
 dataFileTest = "mnist_test.csv"
 
-train_data = np.empty((0,784),dtype=int)
-train_class = np.empty((0),dtype=int)
+train_data = np.empty((60000,784),dtype=int)
+train_class = np.empty(60000,dtype=int)
 
-file=open(directory+datafileTrain,"r")
-test=csv.reader(file)
-i=0;
-for row in test:
-    if i >0:
-        train_class = np.append(train_class, np.array(row[0]))
-        train_data = np.append(train_data, np.array([row[1:]]), axis=0)
-    i+=1
+
+file = open(directory+datafileTrain, "r")
+csvFile = csv.reader(file)
+i = -1
+for row in csvFile:
+    if i > -1:
+        train_class[i] = np.array(row[0])
+        train_data[i][:] = np.array([row[1:]])
+    i += 1
+
 
 print(train_data.shape)
 
 print('Importing testing data')
 
-test_data = np.empty((0,784),dtype=int)
-test_class = np.empty((0),dtype=int)
+test_data = np.empty((10000, 784), dtype=int)
+test_class = np.empty(10000, dtype=int)
 
-file=open(directory+dataFileTest,"r")
-test=csv.reader(file)
-firstline=True
-for row in test:
-    if firstline: #The first line is the names of the columns, we don't store it.
-        firstline = False
-    else:
-        test_class = np.append(test_class, np.array(row[0]))
-        test_data = np.append(test_data, np.array([row[1:]]), axis=0)
+file = open(directory+dataFileTest, "r")
+csvFile = csv.reader(file)
+i = -1
+for row in csvFile:
+    if i > -1:
+        test_data[i] = np.array(row[0])
+        test_data[i][:] = np.array([row[1:]])
+    i += 1
 
 print(test_data.shape)
 
@@ -54,12 +55,12 @@ pca.fit(train_data)
 pca.transform(train_data)
 pca.transform(test_data)
 
-#Creating and training SVM Classifier
+# Creating and training SVM Classifier
 
 print('Training classifier')
 
 clf = make_pipeline(StandardScaler(), SVC(gamma = 'auto'))
-clf.fit(train_data,train_class)
+clf.fit(train_data, train_class)
 
 # Use the trained classifier to classify the test dataset
 
