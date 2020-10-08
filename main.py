@@ -4,6 +4,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from sklearn.decomposition import PCA
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
+from time import time
 import matplotlib.pyplot as plt
 import csv
 
@@ -17,6 +18,7 @@ datafileTrain = "mnist_train.csv"
 dataFileTest = "mnist_test.csv"
 
 # choose if you want to have a nice plot or just to print the result in the terminal
+nDimPCA = 50
 plotPrettyConfMatrix = True
 
 
@@ -33,9 +35,6 @@ for row in csvFile:
         train_data[i][:] = np.array([row[1:]])
     i += 1
 
-
-print(train_data.shape)
-
 print('Importing testing data')
 
 test_data = np.empty((10000, 784), dtype=int)
@@ -50,36 +49,36 @@ for row in csvFile:
         test_data[i][:] = np.array([row[1:]])
     i += 1
 
-print(test_data.shape)
-print(test_class[:10])
-
 # Reducting the number of components using PCA
 
-print('Reducing dimensions of data')
-
-pca = PCA(n_components=50)
+print("Reducing dimensions of data. The number of PCA component is set to", nDimPCA)
+t0PCA = time()
+pca = PCA(n_components=nDimPCA)
 pca.fit(train_data)
 train_data = pca.transform(train_data)
 test_data = pca.transform(test_data)
-print(train_data.shape)
+elapsedPCA = time() - t0PCA
+print("PCA dimension reduction time :",elapsedPCA, "s")
+print("train data shape after PCA :",train_data.shape)
 
 # Creating and training SVM Classifier
 
 print('Training classifier')
-
+t0TrainClassifier = time()
 clf = make_pipeline(StandardScaler(), SVC(gamma = 'auto'))
 clf.fit(train_data, train_class)
+elapsedTrainClassifier = time() - t0TrainClassifier
+print("classifier training time ",elapsedTrainClassifier, "s")
 
 # Use the trained classifier to classify the test dataset
 
 print('Using trained classifier')
-
+t0Prediction = time()
 test_predict = clf.predict(test_data)
-print('Classes from test dataset : ')
-print(test_class[:10])
-print('Predicted classes :')
-print(test_predict[:10])
+elapsedPrediction = time() - t0Prediction
+print("PCA dimension reduction time :",elapsedPrediction, "s")
 
+print("having ", nDimPCA, " component, total time for PCA, classifier training, and class prediction :", elapsedPrediction+elapsedTrainClassifier+elapsedPCA, "s")
 
 # compute the confusion matrix and the accuracy
 conf_mat = confusion_matrix(test_class, test_predict)
@@ -91,14 +90,12 @@ accuracy = accuracy/test_class.size
 
 
 # display results
-print("accuracy :")
-print(accuracy)
+print("accuracy = ", accuracy)
  
 if not plotPrettyConfMatrix:
     print("here is the confusion matrix :")
     print(conf_mat)
 else:
-    print("using plot_confusion_matrix to have a nice plot")
     np.set_printoptions(precision=2)
     titles_options = [("Confusion matrix, without normalization", None),
                       ("Normalized confusion matrix", 'true')]
@@ -110,4 +107,6 @@ else:
         print(disp.confusion_matrix)
     
     plt.show()
-    print("done")
+
+print("done")
+    
