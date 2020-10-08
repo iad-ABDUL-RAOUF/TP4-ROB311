@@ -40,11 +40,12 @@ csvFile = csv.reader(file)
 i = -1
 for row in csvFile:
     if i > -1:
-        test_data[i] = np.array(row[0])
+        test_class[i] = np.array(row[0])
         test_data[i][:] = np.array([row[1:]])
     i += 1
 
 print(test_data.shape)
+print(test_class[:10])
 
 # Reducting the number of components using PCA
 
